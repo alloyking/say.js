@@ -145,7 +145,7 @@ say.export = function(text, voice, speed, filename, callback) {
   //}
 
   if(runningExport){
-    childD = child_process.spawn(commands);
+    childD = child_process.exec(commands);
   } else {
     childD = child_process.spawn(say.speaker, commands);
   }
