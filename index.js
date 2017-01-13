@@ -5,6 +5,8 @@ var path = require('path');
 var say = exports;
 var childD;
 
+var runningExport;
+
 // use the correct library per platform
 if (process.platform === 'darwin') {
   say.speaker = 'say';
@@ -25,6 +27,7 @@ if (process.platform === 'darwin') {
  * @param {Function|null} callback A callback of type function(err) to return.
  */
 say.speak = function(text, voice, speed, callback) {
+  runningExport = false;
   var commands, pipedData;
 
   if (typeof callback !== 'function') {
@@ -115,10 +118,11 @@ say.export = function(text, voice, speed, filename, callback) {
   if (process.platform === 'linux') {
     //echo "This is a test." | text2wave -o output.wav
     commands = ['echo', text, '| text2wave -o', filename];
+    runningExport = true;
   }
   // tailor command arguments to specific platforms
   if (process.platform === 'darwin') {
-
+    runningExport = false;
     if (!voice) {
       commands = [ text ];
     } else {
@@ -132,6 +136,7 @@ say.export = function(text, voice, speed, filename, callback) {
     if (filename){
         commands.push('-o', filename, '--data-format=LEF32@32000');
     }
+    console.log(commands);
   } // else {
     // if we don't support the platform, callback with an error (next tick) - don't continue
     //return process.nextTick(function() {
@@ -139,7 +144,12 @@ say.export = function(text, voice, speed, filename, callback) {
     //});
   //}
 
-  childD = child_process.spawn(say.speaker, commands);
+  if(runningExport){
+    childD = child_process.spawn(commands);
+  } else {
+    childD = child_process.spawn(say.speaker, commands);
+  }
+
 
   childD.stdin.setEncoding('ascii');
   childD.stderr.setEncoding('ascii');
