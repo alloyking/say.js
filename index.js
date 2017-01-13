@@ -132,12 +132,12 @@ say.export = function(text, voice, speed, filename, callback) {
     if (filename){
         commands.push('-o', filename, '--data-format=LEF32@32000');
     }
-  }  else {
+  } // else {
     // if we don't support the platform, callback with an error (next tick) - don't continue
-    return process.nextTick(function() {
-      callback(new Error('say.js export does not support platform ' + process.platform));
-    });
-  }
+    //return process.nextTick(function() {
+    //  callback(new Error('say.js export does not support platform ' + process.platform));
+    //});
+  //}
 
   childD = child_process.spawn(say.speaker, commands);
 
