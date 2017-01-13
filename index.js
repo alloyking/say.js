@@ -117,8 +117,9 @@ say.export = function(text, voice, speed, filename, callback) {
 
   if (process.platform === 'linux') {
     //echo "This is a test." | text2wave -o output.wav
-    commands = ['echo', text, '| text2wave -o', filename];
     runningExport = true;
+    commands = ['echo "', text, '"| text2wave -o', filename];
+    console.log(commands);
   }
   // tailor command arguments to specific platforms
   if (process.platform === 'darwin') {
